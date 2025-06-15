@@ -6,7 +6,6 @@ import RoomListPage from "./pages/RoomListPage/RoomListPage";
 import StartPage from "./pages/StartPage/StartPage";
 
 function App() {
-  const [count, setCount] = useState(0);
 
   return (
     <BrowserRouter>

@@ -1,0 +1,56 @@
+.game-table-container {
+  width: 80vw;
+  margin: 0 auto;
+  max-width: 1200px;
+  min-width: 380px;
+  height: 900px;
+}
+
+/* 共通設定 */
+.game-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* ヘッダーの見た目 */
+.game-table-thead {
+  background-color: #1976D2;
+  color: #FFFFFF;
+}
+
+/* 各列の幅（theadもtbodyも共通） */
+.game-table-th-start,
+.game-table-td-start {
+  width: 10%;
+}
+.game-table-th-playerA,
+.game-table-td-playerA,
+.game-table-th-playerB,
+.game-table-td-playerB {
+  width: 45%;
+}
+
+/* スクロール部分 */
+.game-table-body-wrapper {
+  display: block;
+  max-height: 600px;
+  overflow-y: auto;
+  border: 0.5px solid #b3b3b3;
+}
+
+/* tbodyに table の形を維持させる */
+.game-table tbody {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+/* その他 */
+.game-table-tr {
+  height: 50px;
+}
+
+.game-table-td {
+  text-align: center;
+}
