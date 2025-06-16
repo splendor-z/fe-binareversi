@@ -21,6 +21,10 @@ const RoomListPage: React.FC = () => {
     setGames((prev) => [...prev, newGame]);
   };
 
+  const deleteGame = (id: string) => {
+    setGames((prev) => prev.filter((game) => game.id !== id));
+  };
+
   return (
     <div>
       <button onClick={() => addNewGame("新しいプレイヤーB")}>追加</button>
