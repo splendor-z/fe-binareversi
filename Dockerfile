@@ -6,6 +6,7 @@ WORKDIR /app
 COPY ./app/package*.json ./
 
 # 依存関係をインストール
+RUN rm -rf node_modules package-lock.json
 RUN npm install
 
 # その他のファイルをコピー
