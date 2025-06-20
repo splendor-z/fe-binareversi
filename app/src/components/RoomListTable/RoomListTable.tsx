@@ -1,25 +1,26 @@
 import React from "react";
 import "./roomListTable.css";
-import { useNavigate } from "react-router-dom"; // ← ここを変更
+import { useNavigate } from "react-router-dom";
 
-export type gameTableInfo = {
+type Room = {
   id: string;
-  created_at: string;
-  playerA: string | null;
-  playerB: string;
+  player1: string;
+  player2?: string;
+  isFull: boolean;
 };
 
-type Props = {
-  games: gameTableInfo[];
+type roomListTableProps = {
+  rooms: Room[];
+  onJoinRoom: (roomID: string, joinUserName: string) => void;
 };
 
-const RoomListTable: React.FC<Props> = ({ games }) => {
-  const navigate = useNavigate(); 
+const RoomListTable: React.FC<roomListTableProps> = ({ rooms, onJoinRoom }) => {
+  const navigate = useNavigate();
 
-  // 指定したidのゲーム画面に遷移する
-  //ここでソケット通信を行い,roomListPageの内容を更新する
   const handleEnterGame = (id: string) => {
-    console.log(id);
+    const tmpJoinUser = "testJoinUser";
+    console.log(`Joining room: ${id}`);
+    onJoinRoom(id, tmpJoinUser);
     navigate(`/game/${id}`);
   };
 
@@ -28,7 +29,7 @@ const RoomListTable: React.FC<Props> = ({ games }) => {
       <table className="game-table">
         <thead className="game-table-thead">
           <tr className="game-table-tr">
-            <th className="game-table-th-start">作成時間</th>
+            <th className="game-table-th-start">ルームID</th>
             <th className="game-table-th-playerA">プレイヤーA</th>
             <th className="game-table-th-playerB">プレイヤーB</th>
           </tr>
@@ -38,20 +39,20 @@ const RoomListTable: React.FC<Props> = ({ games }) => {
       <div className="game-table-body-wrapper">
         <table className="game-table">
           <tbody>
-            {games.map((datum) => (
-              <tr key={datum.id} className="game-table-tr">
-                <td className="game-table-td game-table-td-start">
-                  {datum.created_at}
-                </td>
+            {rooms.map((room) => (
+              <tr key={room.id} className="game-table-tr">
+                <td className="game-table-td game-table-td-start">{room.id}</td>
                 <td className="game-table-td game-table-td-playerA">
-                  {datum.playerA === null ? (
-                    <button onClick={() => handleEnterGame(datum.id)}>参加</button>
-                  ) : (
-                    datum.playerA
-                  )}
+                  {room.player1}
                 </td>
                 <td className="game-table-td game-table-td-playerB">
-                  {datum.playerB}
+                  {room.player2 ? (
+                    room.player2
+                  ) : (
+                    <button onClick={() => handleEnterGame(room.id)}>
+                      参加
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
