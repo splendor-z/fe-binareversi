@@ -8,14 +8,13 @@ import Lobby from "./components/Lobby/Lobby";
 import Game from "./components/Game/Game";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<StartPage />} />
         <Route path="/rooms" element={<RoomListPage />} />
         <Route path="/game/:roomId" element={<GamePage />} />
-        <Route path="/lobbytest" element={<Lobby />}></Route>
+        <Route path="/lobbytest" element={<Lobby />} />
         <Route path="/gametest/:roomId" element={<Game />} />
       </Routes>
     </BrowserRouter>
