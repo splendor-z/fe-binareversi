@@ -1,0 +1,40 @@
+.header-main-div {
+  width: 100%;
+  height: 70px;
+  background-color: #000000;
+  display: flex;
+  justify-content: space-between; /* 左右端に配置 */
+  align-items: center;            /* 上下中央揃え */
+  padding: 10px;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+}
+
+.flex-div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  font-size: 32px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.icon-div {
+  height: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.icon-div img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ユーザ情報を右端に固定し、中央揃え */
+.user-info-container {
+  display: flex;
+  align-items: center;   /* 上下中央揃え */
+  justify-content: flex-end;
+  height: 100%;
+}

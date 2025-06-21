@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/useAppSelector";
 import { setPlayer } from "../../features/player/playerSlice";
 import type { Player } from "../../features/player/playerSlice";
+import Header from "../../components/Header/Header";
+import "./startPage.css";
 
 const StartPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -49,36 +51,40 @@ const StartPage: React.FC = () => {
   };
 
   return (
-    <Container
-      maxWidth="sm"
-      sx={{ height: "100vh", display: "flex", alignItems: "center" }}
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        width="100%"
-        gap={2}
-      >
-        <Typography variant="h5">ユーザー名を入力してください</Typography>
-        <TextField
-          label="ユーザー名"
-          variant="outlined"
-          fullWidth
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleStart}
-          disabled={!username.trim()}
+    <>
+      <Header />
+      <div className="start-container-div">
+        <Container
+          sx={{ height: "100vh", display: "flex", alignItems: "center" }}
         >
-          スタート
-        </Button>
-      </Box>
-    </Container>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            width="100%"
+            gap={2}
+          >
+            <Typography variant="h5">ユーザー名を入力してください</Typography>
+            <TextField
+              label="ユーザー名"
+              variant="outlined"
+              fullWidth
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleStart}
+              disabled={!username.trim()}
+            >
+              スタート
+            </Button>
+          </Box>
+        </Container>
+      </div>
+    </>
   );
 };
 

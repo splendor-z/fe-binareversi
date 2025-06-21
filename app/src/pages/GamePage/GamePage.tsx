@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button, Typography, Container } from "@mui/material";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import GameBoard from "../../components/GameBoard/GameBoard";
+import Header from "../../components/Header/Header";
 
 const GamePage: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -77,17 +78,20 @@ const GamePage: React.FC = () => {
   };
 
   return (
-    <Container sx={{ textAlign: "center", marginTop: 5 }}>
-      <div className="exit-button-div" style={{ marginBottom: 20 }}>
-        <Button variant="contained" color="error" onClick={handleExit}>
-          退出
-        </Button>
-      </div>
-      <Typography variant="h4" gutterBottom>
-        Reversi Game
-      </Typography>
-      <GameBoard boardData={board} onCellClick={handleCellClick} />
-    </Container>
+    <>
+      <Header />
+      <Container sx={{ textAlign: "center", marginTop: 5 }}>
+        <div className="exit-button-div" style={{ marginBottom: 20 }}>
+          <Button variant="contained" color="error" onClick={handleExit}>
+            退出
+          </Button>
+        </div>
+        <Typography variant="h4" gutterBottom>
+          Reversi Game
+        </Typography>
+        <GameBoard boardData={board} onCellClick={handleCellClick} />
+      </Container>
+    </>
   );
 };
 
