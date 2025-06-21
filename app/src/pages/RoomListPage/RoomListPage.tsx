@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import RoomListTable from "../../components/RoomListTable/RoomListTable";
 import "./roomListPage.css";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import type { Player } from "../../features/player/playerSlice";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 
@@ -86,7 +85,6 @@ const RoomListPage: React.FC = () => {
       })
     );
   };
-
   return (
     <div>
       <div className="create-button-div">

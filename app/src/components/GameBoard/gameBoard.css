@@ -1,0 +1,16 @@
+/* src/Board.css */
+.board-container {
+  margin: auto;
+  background-color: #007700; /* 濃い緑のオセロ盤色 */
+}
+
+.cell {
+  border: 1px solid #000;
+  background-color: #009900;
+  transition: background-color 0.2s ease;
+}
+
+.cell:hover {
+  background-color: #00bb00;
+  cursor: pointer;
+}
