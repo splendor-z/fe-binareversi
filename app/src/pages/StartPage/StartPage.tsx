@@ -55,7 +55,7 @@ const StartPage: React.FC = () => {
       <Header />
       <div className="start-container-div">
         <Container
-          sx={{ height: "100vh", display: "flex", alignItems: "center" }}
+          sx={{ height: "80vh", display: "flex", alignItems: "center" }}
         >
           <Box
             display="flex"
