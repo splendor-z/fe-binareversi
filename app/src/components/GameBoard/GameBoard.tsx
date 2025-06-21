@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box } from '@mui/material';
 import './gameBoard.css';
-
 
 type BoardProps = {
   onCellClick: (x: number, y: number) => void;
@@ -24,13 +23,17 @@ const GameBoard: React.FC<BoardProps> = ({ onCellClick, boardData }) => {
         row.map((cell, x) => (
           <Box
             key={`${x}-${y}`}
-            onClick={() => onCellClick(x, y)}
+            onClick={() => {
+              if (cell === 9) onCellClick(x, y);
+            }}
             sx={{
               border: '2px solid black',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#2e7d32', 
+              backgroundColor: '#2e7d32',
+              cursor: cell === 9 ? 'pointer' : 'default',
+              '&:hover': cell === 9 ? { backgroundColor: '#4caf50' } : {},
             }}
           >
             {cell === 0 && (
