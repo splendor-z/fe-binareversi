@@ -26,8 +26,9 @@ const StartPage: React.FC = () => {
       }
 
       const data = await res.json();
+      console.log(data);
       const loginedPlayer: Player = {
-        playerID: data.playerID,
+        playerID: data.userID,
         name: data.name,
       };
       dispatch(setPlayer(loginedPlayer));
