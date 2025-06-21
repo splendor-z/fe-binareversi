@@ -1,45 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Button, Typography, Container } from "@mui/material";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import { Typography, Container } from "@mui/material";
 import GameBoard from "../../components/GameBoard/GameBoard";
 
-const emptyBoard = Array.from({ length: 8 }, () => Array(8).fill(7));
-
 const GamePage: React.FC = () => {
-  const { roomId } = useParams<{ roomId: string }>(); // パスパラメータから取得
-  const player = useAppSelector((state) => state.player);
-  const playerID = player.playerID;
-  const [board, setBoard] = useState<number[][]>(emptyBoard);
+  const { roomId } = useParams<{ roomId: string }>();
+  const player = useAppSelector(
+    (state: { player: { playerID: string } | null }) => state.player
+  );
+  const navigate = useNavigate();
   const wsRef = useRef<WebSocket | null>(null);
-  // const [flippedCells, setFlippedCells] = useState<number[][]>(
-  //   Array(8)
-  //     .fill(null)
-  //     .map(() => Array(8).fill(0))
-  // );
-  // const prevBoardRef = useRef(board);
 
-  // useEffect(() => {
-  //   const prev = prevBoardRef.current;
-  //   const newFlipped = board.map((row, y) =>
-  //     row.map((cell, x) => {
-  //       const prevCell = prev[y][x];
-  //       return prevCell !== cell &&
-  //         (cell === 0 || cell === 1) &&
-  //         (prevCell === 0 || prevCell === 1)
-  //         ? 1
-  //         : 0;
-  //     })
-  //   );
-  //   setFlippedCells(newFlipped);
-  //   prevBoardRef.current = board;
-  // }, [board]);
+  const emptyBoard = Array.from({ length: 8 }, () => Array(8).fill(7));
+  const [board, setBoard] = useState<number[][]>(emptyBoard);
+
+  if (!player) return null; // 早期リターン
 
   useEffect(() => {
-    if (!roomId || !playerID) return;
+    if (!roomId || wsRef.current) return;
 
     const ws = new WebSocket(
-      `ws://localhost:8080/ws/game/${roomId}/${playerID}`
+      `ws://localhost:8080/ws/game/${roomId}/${player.playerID}`
     );
     wsRef.current = ws;
 
@@ -54,16 +36,17 @@ const GamePage: React.FC = () => {
 
       switch (data.type) {
         case "game_start":
-          setBoard(data.board);
-          break;
         case "board_update":
           setBoard(data.board);
           break;
         case "valid_moves":
-          // 必要なら処理追加
           break;
         case "game_over":
           alert(`Game Over! Winner: ${data.winner}`);
+          setTimeout(() => navigate("/rooms"), 3000);
+          break;
+        case "exited_room":
+          navigate("/rooms");
           break;
         default:
           console.warn("Unknown message type", data);
@@ -81,35 +64,29 @@ const GamePage: React.FC = () => {
     return () => {
       ws.close();
     };
-  }, [roomId, playerID]);
+  }, [roomId, player, navigate]);
+
+  const handleExit = () => {
+    wsRef.current?.send(JSON.stringify({ type: "exit_room" }));
+  };
 
   const handleCellClick = (x: number, y: number) => {
-    console.log(`クリックされた座標: (${x}, ${y})`);
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(
-        JSON.stringify({
-          type: "move",
-          x,
-          y,
-        })
-      );
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: "move", x, y }));
     }
   };
 
   return (
     <Container sx={{ textAlign: "center", marginTop: 5 }}>
+      <div className="exit-button-div" style={{ marginBottom: 20 }}>
+        <Button variant="contained" color="error" onClick={handleExit}>
+          退出
+        </Button>
+      </div>
       <Typography variant="h4" gutterBottom>
         Reversi Game
       </Typography>
-      {/* <GameBoard
-        boardData={board}
-        onCellClick={handleCellClick}
-        flippedCells={flippedCells}
-      /> */}
-      <GameBoard
-        boardData={board}
-        onCellClick={handleCellClick}
-      />
+      <GameBoard boardData={board} onCellClick={handleCellClick} />
     </Container>
   );
 };

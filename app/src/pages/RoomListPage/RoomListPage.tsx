@@ -12,16 +12,23 @@ type Room = {
   isFull: boolean;
 };
 
+type Player = {
+  playerID: string;
+  // 他のプロパティがあればここに追加
+};
+
 const RoomListPage: React.FC = () => {
-  const player = useAppSelector((state) => state.player); // ✅ ここでフックを呼ぶ（トップレベル）
+  const player = useAppSelector(
+    (state: { player: Player | null }) => state.player
+  );
   const [rooms, setRooms] = useState<Room[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    //ログイン情報がない時にトップページに遷移
     if (!player) {
       navigate("/");
+      return;
     }
 
     const ws = new WebSocket("ws://localhost:8080/ws/lobby");
@@ -29,6 +36,9 @@ const RoomListPage: React.FC = () => {
 
     ws.onopen = () => {
       console.log("WebSocket 接続開始");
+      wsRef.current?.send(
+        JSON.stringify({ type: "room_init", playerID: player.playerID })
+      );
     };
 
     ws.onerror = (error) => {
@@ -40,11 +50,11 @@ const RoomListPage: React.FC = () => {
     };
 
     ws.onmessage = (e) => {
-      console.log("WebSocket メッセージ受信:", e.data);
       try {
         const msg = JSON.parse(e.data);
         switch (msg.type) {
           case "room_list":
+            console.log("room list", msg.rooms);
             setRooms(msg.rooms);
             break;
           case "room_created":
@@ -90,6 +100,8 @@ const RoomListPage: React.FC = () => {
       })
     );
   };
+
+  if (!player) return null; // 👈 ここで null ガードを追加
 
   return (
     <div>
