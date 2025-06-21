@@ -11,7 +11,7 @@ type Room = {
 };
 
 const RoomListPage: React.FC = () => {
-  const tmpUserName = "test";
+  const tmpPlayerID = "637fdd05-a930-4ec2-aa14-963fffa9ddb2"; //あとで削除
   const [rooms, setRooms] = useState<Room[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -69,22 +69,25 @@ const RoomListPage: React.FC = () => {
   }, [rooms]);
 
   const createRoom = () => {
-    const roomID = uuidv4();
     wsRef.current?.send(
-      JSON.stringify({ type: "create_room", roomID, player: tmpUserName })
+      JSON.stringify({ type: "create_room", playerID: tmpPlayerID })
     );
   };
 
-  const joinRoom = (roomID: string, joinUserName: string) => {
+  const joinRoom = (roomID: string, userID: string) => {
     wsRef.current?.send(
-      JSON.stringify({ type: "join_room", roomID, player: joinUserName })
+      JSON.stringify({ type: "join_room", roomID: roomID, playerID: userID })
     );
   };
   return (
     <div>
       <h1>ルーム一覧</h1>
       <button onClick={createRoom}>＋ ルーム作成</button>
-      <RoomListTable rooms={rooms} onJoinRoom={joinRoom} />
+      <RoomListTable
+        rooms={rooms}
+        onJoinRoom={joinRoom}
+        currentPlayerID={tmpPlayerID}
+      />
     </div>
   );
 };
