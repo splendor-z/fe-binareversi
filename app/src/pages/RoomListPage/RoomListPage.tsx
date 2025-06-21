@@ -49,6 +49,11 @@ const RoomListPage: React.FC = () => {
             break;
           case "room_created":
             setRooms((prev) => [...prev, msg.room]);
+            console.log(msg.room)
+
+            if (msg.room.player1 === player.name) { // 暫定処理のためにnameにしているがそのうちidにすること
+              navigate(`/game/${msg.room.id}`);
+            }
             break;
           case "room_updated":
             setRooms((prev) =>
@@ -85,6 +90,7 @@ const RoomListPage: React.FC = () => {
       })
     );
   };
+
   return (
     <div>
       <div className="create-button-div">

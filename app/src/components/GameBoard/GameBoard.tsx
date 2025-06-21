@@ -5,7 +5,7 @@ import Disc3D from './Disc3D';
 type BoardProps = {
   onCellClick: (x: number, y: number) => void;
   boardData: number[][];
-  flippedCells?: number[][];
+  flippedCells?: number[][]; // flipedcellsはひっくっり返されたコマの二次元配列ではなく、意味合いとしては一手前の盤面が正しいので英語が間違っている。
 };
 
 const GameBoard: React.FC<BoardProps> = ({ onCellClick, boardData, flippedCells }) => {
@@ -20,10 +20,10 @@ const GameBoard: React.FC<BoardProps> = ({ onCellClick, boardData, flippedCells 
         border: '4px solid black',
       }}
     >
-      {boardData.flatMap((row, y) =>
-        row.map((cell, x) => {
-          const flipped = flippedCells?.[y]?.[x] === 1;
-
+      {Array.from({ length: 8 }, (_, x) =>
+        Array.from({ length: 8 }, (_, y) => {
+          const cell = boardData[x][y];
+          const flipped = flippedCells?.[x]?.[y] === 1; // 一手前にそのコマが黒だったかを判定している変数なので、flippedは命名は悪い、意味が悪い => クソコード！！
           return (
             <Box
               key={`${x}-${y}`}
@@ -46,7 +46,7 @@ const GameBoard: React.FC<BoardProps> = ({ onCellClick, boardData, flippedCells 
             </Box>
           );
         })
-      )}
+      ).flat()}
     </Box>
   );
 };
