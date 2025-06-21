@@ -48,6 +48,7 @@ const GamePage: React.FC = () => {
           break;
         case "exited_room":
           navigate("/rooms");
+          break;
         default:
           console.warn("Unknown message type", data);
       }
