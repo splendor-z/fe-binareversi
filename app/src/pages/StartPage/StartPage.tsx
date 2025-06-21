@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../hooks/useAppSelector";
+import { setPlayer } from "../../features/player/playerSlice";
+import type { Player } from "../../features/player/playerSlice";
 
 const StartPage: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
 
@@ -22,7 +26,11 @@ const StartPage: React.FC = () => {
       }
 
       const data = await res.json();
-      console.log(data);
+      const loginedPlayer: Player = {
+        playerID: data.playerID,
+        name: data.name,
+      };
+      dispatch(setPlayer(loginedPlayer));
       return true;
     } catch (e) {
       alert("登録に失敗しました" + e);
