@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import RoomListTable from "../../components/RoomListTable/RoomListTable";
 import "./roomListPage.css";
-import { v4 as uuidv4 } from "uuid";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import type { Player } from "../../features/player/playerSlice";
+import { useNavigate } from "react-router-dom";
 
 type Room = {
   id: string;
@@ -11,17 +13,22 @@ type Room = {
 };
 
 const RoomListPage: React.FC = () => {
-  const tmpPlayerID = "637fdd05-a930-4ec2-aa14-963fffa9ddb2"; //あとで削除
+  const player = useAppSelector((state) => state.player); // ✅ ここでフックを呼ぶ（トップレベル）
   const [rooms, setRooms] = useState<Room[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("🔗 WebSocket 接続を開始します");
+    //ログイン情報がない時にトップページに遷移
+    if (!player) {
+      navigate("/");
+    }
+
     const ws = new WebSocket("ws://localhost:8080/ws/lobby");
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log("WebSocket 接続が確立されました");
+      console.log("WebSocket 接続開始");
     };
 
     ws.onerror = (error) => {
@@ -29,7 +36,7 @@ const RoomListPage: React.FC = () => {
     };
 
     ws.onclose = (event) => {
-      console.warn("WebSocket 接続が閉じられました:", event.reason);
+      console.warn("WebSocket 接続クローズ", event.reason);
     };
 
     ws.onmessage = (e) => {
@@ -38,21 +45,18 @@ const RoomListPage: React.FC = () => {
         const msg = JSON.parse(e.data);
         switch (msg.type) {
           case "room_list":
-            console.log("ルーム一覧を更新:", msg.rooms);
             setRooms(msg.rooms);
             break;
           case "room_created":
-            console.log("ルーム作成:", msg.room);
             setRooms((prev) => [...prev, msg.room]);
             break;
           case "room_updated":
-            console.log("ルーム更新:", msg.room);
             setRooms((prev) =>
               prev.map((room) => (room.id === msg.room.id ? msg.room : room))
             );
             break;
           default:
-            console.warn("未対応のメッセージタイプ:", msg.type);
+            console.warn("未対応のメッセージ:", msg.type);
         }
       } catch (err) {
         console.error("メッセージのパースに失敗:", e.data);
@@ -62,31 +66,35 @@ const RoomListPage: React.FC = () => {
     return () => {
       ws.close();
     };
-  }, []);
-
-  useEffect(() => {
-    console.log("現在のルーム一覧:", rooms);
-  }, [rooms]);
+  }, [player]);
 
   const createRoom = () => {
+    if (!player) return;
     wsRef.current?.send(
-      JSON.stringify({ type: "create_room", playerID: tmpPlayerID })
+      JSON.stringify({ type: "create_room", playerID: player.playerID })
     );
   };
 
-  const joinRoom = (roomID: string, userID: string) => {
+  const joinRoom = (roomID: string) => {
+    if (!player) return;
     wsRef.current?.send(
-      JSON.stringify({ type: "join_room", roomID: roomID, playerID: userID })
+      JSON.stringify({
+        type: "join_room",
+        roomID: roomID,
+        playerID: player.playerID,
+      })
     );
   };
+
   return (
     <div>
       <h1>ルーム一覧</h1>
+      <p>ようこそ、{player.name} さん</p>
       <button onClick={createRoom}>＋ ルーム作成</button>
       <RoomListTable
         rooms={rooms}
         onJoinRoom={joinRoom}
-        currentPlayerID={tmpPlayerID}
+        currentPlayerID={player.playerID}
       />
     </div>
   );
