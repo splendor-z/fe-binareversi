@@ -4,7 +4,7 @@
   margin: 0 auto;
   max-width: 1200px;
   min-width: 380px;
-  height: 900px;
+  height: 600px;
   display: flex;
   flex-direction: column;
 }
