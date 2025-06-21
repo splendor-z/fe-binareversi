@@ -1,13 +1,14 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import './gameBoard.css';
+import Disc3D from './Disc3D';
 
 type BoardProps = {
   onCellClick: (x: number, y: number) => void;
   boardData: number[][];
+  flippedCells?: number[][];
 };
 
-const GameBoard: React.FC<BoardProps> = ({ onCellClick, boardData }) => {
+const GameBoard: React.FC<BoardProps> = ({ onCellClick, boardData, flippedCells }) => {
   return (
     <Box
       sx={{
@@ -20,44 +21,31 @@ const GameBoard: React.FC<BoardProps> = ({ onCellClick, boardData }) => {
       }}
     >
       {boardData.flatMap((row, y) =>
-        row.map((cell, x) => (
-          <Box
-            key={`${x}-${y}`}
-            onClick={() => {
-              if (cell === 9) onCellClick(x, y);
-            }}
-            sx={{
-              border: '2px solid black',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#2e7d32',
-              cursor: cell === 9 ? 'pointer' : 'default',
-              '&:hover': cell === 9 ? { backgroundColor: '#4caf50' } : {},
-            }}
-          >
-            {cell === 0 && (
-              <Box
-                sx={{
-                  width: 65,
-                  height: 65,
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                }}
-              />
-            )}
-            {cell === 1 && (
-              <Box
-                sx={{
-                  width: 65,
-                  height: 65,
-                  borderRadius: '50%',
-                  backgroundColor: 'black',
-                }}
-              />
-            )}
-          </Box>
-        ))
+        row.map((cell, x) => {
+          const flipped = flippedCells?.[y]?.[x] === 1;
+
+          return (
+            <Box
+              key={`${x}-${y}`}
+              onClick={() => {
+                if (cell === 9) onCellClick(x, y);
+              }}
+              sx={{
+                border: '2px solid black',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#2e7d32',
+                cursor: cell === 9 ? 'pointer' : 'default',
+                '&:hover': cell === 9 ? { backgroundColor: '#4caf50' } : {},
+              }}
+            >
+              {(cell === 0 || cell === 1) && (
+                <Disc3D isBlack={cell === 1} flipped={flipped} />
+              )}
+            </Box>
+          );
+        })
       )}
     </Box>
   );
