@@ -19,46 +19,49 @@ const GameBoard: React.FC<BoardProps> = ({ onCellClick, boardData }) => {
         border: '4px solid black',
       }}
     >
-      {boardData.flatMap((row, y) =>
-        row.map((cell, x) => (
-          <Box
-            key={`${x}-${y}`}
-            onClick={() => {
-              if (cell === 9) onCellClick(x, y);
-            }}
-            sx={{
-              border: '2px solid black',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#2e7d32',
-              cursor: cell === 9 ? 'pointer' : 'default',
-              '&:hover': cell === 9 ? { backgroundColor: '#4caf50' } : {},
-            }}
-          >
-            {cell === 0 && (
-              <Box
-                sx={{
-                  width: 65,
-                  height: 65,
-                  borderRadius: '50%',
-                  backgroundColor: 'white',
-                }}
-              />
-            )}
-            {cell === 1 && (
-              <Box
-                sx={{
-                  width: 65,
-                  height: 65,
-                  borderRadius: '50%',
-                  backgroundColor: 'black',
-                }}
-              />
-            )}
-          </Box>
-        ))
-      )}
+      {Array.from({ length: 8 }, (_, x) =>
+        Array.from({ length: 8 }, (_, y) => {
+          const cell = boardData[x][y]; // 注意：アクセスは[y][x]のまま
+          return (
+            <Box
+              key={`${x}-${y}`}
+              onClick={() => {
+                if (cell === 9) onCellClick(x, y);
+              }}
+              sx={{
+                border: '2px solid black',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#2e7d32',
+                cursor: cell === 9 ? 'pointer' : 'default',
+                '&:hover': cell === 9 ? { backgroundColor: '#4caf50' } : {},
+              }}
+            >
+              {cell === 0 && (
+                <Box
+                  sx={{
+                    width: 65,
+                    height: 65,
+                    borderRadius: '50%',
+                    backgroundColor: 'white',
+                  }}
+                />
+              )}
+              {cell === 1 && (
+                <Box
+                  sx={{
+                    width: 65,
+                    height: 65,
+                    borderRadius: '50%',
+                    backgroundColor: 'black',
+                  }}
+                />
+              )}
+            </Box>
+          );
+        })
+      ).flat()}
     </Box>
   );
 };
