@@ -10,8 +10,8 @@ const Disc3D: React.FC<Disc3DProps> = ({ isBlack, flipped }) => {
   return (
     <Box
       sx={{
-        width: 65,
-        height: 65,
+        width: 50,
+        height: 50,
         perspective: 600,
       }}
     >

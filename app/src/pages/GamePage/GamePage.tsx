@@ -1,6 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Button, Typography, Container, Paper } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Container,
+  Paper,
+  useMediaQuery,
+} from "@mui/material";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import GameBoard from "../../components/GameBoard/GameBoard";
 import Header from "../../components/Header/Header";
@@ -16,7 +23,9 @@ const GamePage: React.FC = () => {
   const emptyBoard = Array.from({ length: 8 }, () => Array(8).fill(7));
   const [board, setBoard] = useState<number[][]>(emptyBoard);
 
-  if (!player) return null; // 早期リターン
+  const isVertical = useMediaQuery("(max-aspect-ratio: 3/2)");
+
+  if (!player) return null;
 
   useEffect(() => {
     if (!roomId || wsRef.current) return;
@@ -77,6 +86,100 @@ const GamePage: React.FC = () => {
     }
   };
 
+  const renderOperators = (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: 4,
+        marginTop: 2,
+      }}
+    >
+      <Button
+        variant="outlined"
+        sx={{
+          borderRadius: "8px",
+          height: "8vh",
+          aspectRatio: "1",
+          fontSize: "3vh",
+          border: "3px solid black",
+          color: "black",
+          fontWeight: "bold",
+        }}
+      >
+        ＋
+      </Button>
+      <Button
+        variant="outlined"
+        sx={{
+          borderRadius: "8px",
+          height: "8vh",
+          aspectRatio: "1",
+          fontSize: "3.5vh",
+          border: "3px solid black",
+          color: "black",
+        }}
+      >
+        ×
+      </Button>
+      <Paper
+        sx={{
+          borderRadius: "8px",
+          height: "8vh",
+          aspectRatio: "3",
+          fontSize: "3vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          border: "2px solid",
+          borderColor: "black",
+          padding: "0 16px",
+        }}
+      >
+        ターン
+      </Paper>
+    </Box>
+  );
+
+  const buttonStyle = (color: string) => ({
+    borderRadius: "8px",
+    width: "12vw",
+    aspectRatio: "3 / 2",
+    fontSize: "1.5vw",
+    border: `3px solid ${color}`,
+    color,
+  });
+
+  const renderControls = (
+    <Box
+      sx={{
+        display: isVertical ? "flex" : "grid",
+        flexDirection: isVertical ? "column" : undefined,
+        gridTemplateColumns: isVertical ? undefined : "repeat(2, 1fr)",
+        gap: 2,
+        justifyItems: "center",
+        alignItems: "center",
+      }}
+    >
+      <Button
+        variant="outlined"
+        onClick={() => wsRef.current?.send(JSON.stringify({ type: "pass" }))}
+        sx={buttonStyle("black")}
+      >
+        パス
+      </Button>
+      <Button variant="outlined" onClick={handleExit} sx={buttonStyle("red")}>
+        退出
+      </Button>
+      <Button variant="outlined" sx={buttonStyle("black")}>
+        演算
+      </Button>
+      <Button variant="outlined" sx={buttonStyle("red")}>
+        キャンセル
+      </Button>
+    </Box>
+  );
   return (
     <>
       <Header />
@@ -85,136 +188,37 @@ const GamePage: React.FC = () => {
           <Box
             sx={{
               display: "flex",
+              flexDirection: "row",
               justifyContent: "center",
-              alignItems: "flex-start",
-              gap: 4,
+              alignItems: "flex-end",
+              gap: 10,
+              pb: 4,
             }}
           >
-            <GameBoard boardData={board} onCellClick={handleCellClick} />
-            <Box sx={{ marginTop: 10 }}>
-              <Box sx={{ display: "flex" }}>
-                <Button
-                  variant="outlined"
-                  onClick={handleExit}
-                  sx={{
-                    marginBottom: 2,
-                    marginRight: 5,
-                    borderRadius: "8px",
-                    width: "150px",
-                    height: "100px",
-                    fontSize: "3rem",
-                    border: "3px solid black",
-                    color: "black",
-                  }}
-                >
-                  パス
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={handleExit}
-                  sx={{
-                    marginBottom: 2,
-                    marginRight: 5,
-                    borderRadius: "8px",
-                    width: "150px",
-                    height: "100px",
-                    fontSize: "3rem",
-                    border: "3px solid red",
-                    color: "red",
-                  }}
-                >
-                  退出
-                </Button>
-              </Box>
-              <Box sx={{ dispaly: "flex" }}>
-                <Button
-                  variant="outlined"
-                  sx={{
-                    marginTop: 5,
-                    marginBottom: 2,
-                    marginRight: 5,
-                    borderRadius: "8px",
-                    width: "150px",
-                    height: "100px",
-                    fontSize: "3rem",
-                    border: "3px solid black",
-                    color: "black",
-                  }}
-                >
-                  演算
-                </Button>
-                <Button
-                  variant="outlined"
-                  sx={{
-                    marginTop: 5,
-                    marginBottom: 2,
-                    marginRight: 5,
-                    borderRadius: "8px",
-                    width: "160px",
-                    height: "100px",
-                    fontSize: "23px",
-                    border: "3px solid red",
-                    color: "red",
-                  }}
-                >
-                  キャンセル
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 4,
-              marginLeft: 33,
-            }}
-          >
-            <Button
-              variant="outlined"
+            {/* 左側：GameBoardとOperatorsをまとめて縦に中央揃え */}
+            <Box
               sx={{
-                marginTop: 2.3,
-                borderRadius: "8px",
-                width: "80px",
-                height: "70px",
-                fontSize: "45px",
-                border: "3px solid black",
-                color: "black",
-                fontWeight: "bold",
-              }}
-            >
-              ＋
-            </Button>
-            <Button
-              variant="outlined"
-              sx={{
-                marginTop: 2.3,
-                borderRadius: "8px",
-                width: "80px",
-                height: "70px",
-                fontSize: "60px",
-                border: "3px solid black",
-                color: "black",
-              }}
-            >
-              ×
-            </Button>
-            <Paper
-              sx={{
-                marginTop: 2,
-                borderRadius: "8px",
-                width: "200px",
-                height: "70px",
-                fontSize: "23px",
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
-                border: "2px solid",
-                borderColor: "black",
               }}
             >
-              ターン
-            </Paper>
+              <GameBoard boardData={board} onCellClick={handleCellClick} />
+              {renderOperators}
+            </Box>
+
+            {/* 右側：GameBoardの下端に合わせてrenderControlsを下詰め */}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                marginBottom: 10,
+              }}
+            >
+              <Box sx={{ flexGrow: 1 }} /> {/* 上方向スペーサー */}
+              {renderControls}
+            </Box>
           </Box>
         </Container>
       </div>

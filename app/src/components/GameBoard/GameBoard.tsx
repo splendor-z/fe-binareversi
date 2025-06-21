@@ -15,8 +15,8 @@ const GameBoard: React.FC<BoardProps> = ({ onCellClick, boardData, flippedCells 
         display: 'grid',
         gridTemplateColumns: 'repeat(8, 1fr)',
         gridTemplateRows: 'repeat(8, 1fr)',
-        width: 650,
-        height: 650,
+        width: 480,
+        height: 480,
         border: '4px solid black',
       }}
     >
