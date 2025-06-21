@@ -6,7 +6,6 @@ import RoomListPage from "./pages/RoomListPage/RoomListPage";
 import StartPage from "./pages/StartPage/StartPage";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
