@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Typography, Container } from "@mui/material";
+import { Box, Button, Typography, Container, Paper } from "@mui/material";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import GameBoard from "../../components/GameBoard/GameBoard";
 
@@ -77,16 +77,127 @@ const GamePage: React.FC = () => {
   };
 
   return (
-    <Container sx={{ textAlign: "center", marginTop: 5 }}>
-      <div className="exit-button-div" style={{ marginBottom: 20 }}>
-        <Button variant="contained" color="error" onClick={handleExit}>
-          退出
+    <Container sx={{ textAlign: "center"}}>
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start", gap: 4 }}>
+        <GameBoard boardData={board} onCellClick={handleCellClick} />
+        <Box sx={{ marginTop: 10 }}> 
+          <Box sx={{ display: "flex" }}>
+            <Button
+              variant="outlined"
+              onClick={handleExit}
+              sx={{
+                marginBottom: 2,
+                marginRight: 5,
+                borderRadius: "8px",
+                width: "150px",
+                height: "100px",
+                fontSize: "3rem",
+                border: "3px solid black",
+                color: "black",
+              }}
+            >
+              パス
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleExit}
+              sx={{
+                marginBottom: 2,
+                marginRight: 5,
+                borderRadius: "8px",
+                width: "150px",
+                height: "100px",
+                fontSize: "3rem",
+                border: "3px solid red", 
+                color: "red",
+              }}
+            >
+              退出
+            </Button>
+          </Box>
+          <Box sx={{ dispaly: "flex" }}>
+            <Button
+              variant="outlined"
+              sx={{
+                marginTop: 5,
+                marginBottom: 2,
+                marginRight: 5,
+                borderRadius: "8px",
+                width: "150px",
+                height: "100px",
+                fontSize: "3rem",
+                border: "3px solid black",
+                color: "black",
+              }}
+            >
+              演算
+            </Button>
+            <Button
+              variant="outlined"
+              sx={{
+                marginTop: 5,
+                marginBottom: 2,
+                marginRight: 5,
+                borderRadius: "8px",
+                width: "160px",
+                height: "100px",
+                fontSize: "23px",
+                border: "3px solid red", 
+                color: "red",
+              }}
+            >
+              キャンセル
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "flex-start", gap: 4, marginLeft: 33}}>
+        <Button
+          variant="outlined"
+          sx={{
+            marginTop: 2.3,
+            borderRadius: "8px",
+            width: "80px",
+            height: "70px",
+            fontSize: "45px",
+            border: "3px solid black",
+            color: "black",
+            fontWeight: "bold"
+          }}
+        >
+          ＋
         </Button>
-      </div>
-      <Typography variant="h4" gutterBottom>
-        Reversi Game
-      </Typography>
-      <GameBoard boardData={board} onCellClick={handleCellClick} />
+        <Button
+          variant="outlined"
+          sx={{
+            marginTop: 2.3,
+            borderRadius: "8px",
+            width: "80px",
+            height: "70px",
+            fontSize: "60px",
+            border: "3px solid black",
+            color: "black",
+          }}
+        >
+          ×
+        </Button>
+        <Paper
+          sx={{
+            marginTop: 2,
+            borderRadius: "8px",
+            width: "200px",
+            height: "70px",
+            fontSize: "23px",
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "center",
+            border: "2px solid",
+            borderColor: "black",
+          }}
+        >
+          ターン
+        </Paper>
+      </Box>
     </Container>
   );
 };
