@@ -1,26 +1,24 @@
-import { Button } from "@mui/material";
-import { useAppSelector } from "../../hooks/useAppSelector";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Button, Typography, Container } from "@mui/material";
+import { useAppSelector } from "../../hooks/useAppSelector";
+import GameBoard from "../../components/GameBoard/GameBoard";
 
 const GamePage: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
-  // 型定義を明示することでplayerIDプロパティの存在を保証
-  interface Player {
-    playerID: string;
-  }
   const player = useAppSelector(
-    (state: { player: Player | null }) => state.player
+    (state: { player: { playerID: string } | null }) => state.player
   );
   const navigate = useNavigate();
   const wsRef = useRef<WebSocket | null>(null);
 
+  const emptyBoard = Array.from({ length: 8 }, () => Array(8).fill(7));
+  const [board, setBoard] = useState<number[][]>(emptyBoard);
+
+  if (!player) return null; // 早期リターン
+
   useEffect(() => {
-    // player or roomId が無ければホームにリダイレクト
-    if (!player || !roomId) {
-      navigate("/");
-      return;
-    }
+    if (!roomId || wsRef.current) return;
 
     const ws = new WebSocket(
       `ws://localhost:8080/ws/game/${roomId}/${player.playerID}`
@@ -29,7 +27,7 @@ const GamePage: React.FC = () => {
 
     ws.onopen = () => {
       console.log("WebSocket connected");
-      wsRef.current?.send(JSON.stringify({ type: "join" }));
+      ws.send(JSON.stringify({ type: "join" }));
     };
 
     ws.onmessage = (event) => {
@@ -39,15 +37,17 @@ const GamePage: React.FC = () => {
       switch (data.type) {
         case "game_start":
         case "board_update":
+          setBoard(data.board);
           break;
         case "valid_moves":
-          // 必要に応じて処理
           break;
         case "game_over":
           alert(`Game Over! Winner: ${data.winner}`);
+          setTimeout(() => navigate("/rooms"), 3000);
           break;
         case "exited_room":
           navigate("/rooms");
+          break;
         default:
           console.warn("Unknown message type", data);
       }
@@ -64,20 +64,30 @@ const GamePage: React.FC = () => {
     return () => {
       ws.close();
     };
-  }, [roomId, player]);
+  }, [roomId, player, navigate]);
 
   const handleExit = () => {
     wsRef.current?.send(JSON.stringify({ type: "exit_room" }));
   };
 
+  const handleCellClick = (x: number, y: number) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: "move", x, y }));
+    }
+  };
+
   return (
-    <>
-      <div className="exit-button-div">
+    <Container sx={{ textAlign: "center", marginTop: 5 }}>
+      <div className="exit-button-div" style={{ marginBottom: 20 }}>
         <Button variant="contained" color="error" onClick={handleExit}>
           退出
         </Button>
       </div>
-    </>
+      <Typography variant="h4" gutterBottom>
+        Reversi Game
+      </Typography>
+      <GameBoard boardData={board} onCellClick={handleCellClick} />
+    </Container>
   );
 };
 
