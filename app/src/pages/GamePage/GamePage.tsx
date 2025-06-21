@@ -12,28 +12,28 @@ const GamePage: React.FC = () => {
   const playerID = player.playerID;
   const [board, setBoard] = useState<number[][]>(emptyBoard);
   const wsRef = useRef<WebSocket | null>(null);
-  const [flippedCells, setFlippedCells] = useState<number[][]>(
-    Array(8)
-      .fill(null)
-      .map(() => Array(8).fill(0))
-  );
-  const prevBoardRef = useRef(board);
+  // const [flippedCells, setFlippedCells] = useState<number[][]>(
+  //   Array(8)
+  //     .fill(null)
+  //     .map(() => Array(8).fill(0))
+  // );
+  // const prevBoardRef = useRef(board);
 
-  useEffect(() => {
-    const prev = prevBoardRef.current;
-    const newFlipped = board.map((row, y) =>
-      row.map((cell, x) => {
-        const prevCell = prev[y][x];
-        return prevCell !== cell &&
-          (cell === 0 || cell === 1) &&
-          (prevCell === 0 || prevCell === 1)
-          ? 1
-          : 0;
-      })
-    );
-    setFlippedCells(newFlipped);
-    prevBoardRef.current = board;
-  }, [board]);
+  // useEffect(() => {
+  //   const prev = prevBoardRef.current;
+  //   const newFlipped = board.map((row, y) =>
+  //     row.map((cell, x) => {
+  //       const prevCell = prev[y][x];
+  //       return prevCell !== cell &&
+  //         (cell === 0 || cell === 1) &&
+  //         (prevCell === 0 || prevCell === 1)
+  //         ? 1
+  //         : 0;
+  //     })
+  //   );
+  //   setFlippedCells(newFlipped);
+  //   prevBoardRef.current = board;
+  // }, [board]);
 
   useEffect(() => {
     if (!roomId || !playerID) return;
@@ -101,10 +101,14 @@ const GamePage: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Reversi Game
       </Typography>
-      <GameBoard
+      {/* <GameBoard
         boardData={board}
         onCellClick={handleCellClick}
         flippedCells={flippedCells}
+      /> */}
+      <GameBoard
+        boardData={board}
+        onCellClick={handleCellClick}
       />
     </Container>
   );
