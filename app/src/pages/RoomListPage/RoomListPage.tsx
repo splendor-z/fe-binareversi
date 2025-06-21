@@ -4,6 +4,7 @@ import "./roomListPage.css";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import type { Player } from "../../features/player/playerSlice";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 type Room = {
   id: string;
@@ -88,9 +89,12 @@ const RoomListPage: React.FC = () => {
 
   return (
     <div>
-      <h1>ルーム一覧</h1>
-      <p>ようこそ、{player.name} さん</p>
-      <button onClick={createRoom}>＋ ルーム作成</button>
+      <div className="create-button-div">
+        <Button variant="contained" color="primary" onClick={createRoom}>
+          ルーム作成
+        </Button>
+      </div>
+
       <RoomListTable
         rooms={rooms}
         onJoinRoom={joinRoom}
