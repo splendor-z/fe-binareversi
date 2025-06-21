@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import RoomListTable from "../../components/RoomListTable/RoomListTable";
 import "./roomListPage.css";
-import { v4 as uuidv4 } from "uuid";
 
 type Room = {
   id: string;
