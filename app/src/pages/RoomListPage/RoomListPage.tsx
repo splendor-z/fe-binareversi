@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import RoomListTable from "../../components/RoomListTable/RoomListTable";
 import "./roomListPage.css";
 import { useAppSelector } from "../../hooks/useAppSelector";
-import type { Player } from "../../features/player/playerSlice";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 
@@ -50,6 +49,11 @@ const RoomListPage: React.FC = () => {
             break;
           case "room_created":
             setRooms((prev) => [...prev, msg.room]);
+            console.log(msg.room)
+
+            if (msg.room.player1 === player.name) { // 暫定処理のためにnameにしているがそのうちidにすること
+              navigate(`/game/${msg.room.id}`);
+            }
             break;
           case "room_updated":
             setRooms((prev) =>

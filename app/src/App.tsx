@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GamePage from "./pages/GamePage/GamePage";
 import RoomListPage from "./pages/RoomListPage/RoomListPage";
 import StartPage from "./pages/StartPage/StartPage";
-import PrivatePage from "./pages/PrivatePage/PrivatePage";
+import Lobby from "./components/Lobby/Lobby";
+import Game from "./components/Game/Game";
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
           element={<PrivatePage Component={GamePage} />}
         /> */}
         <Route path="/game/:roomId" element={<GamePage />} />
+        <Route path="/lobbytest" element={<Lobby />}></Route>
+        <Route path="/gametest/:roomId" element={<Game />} />
       </Routes>
     </BrowserRouter>
   );
