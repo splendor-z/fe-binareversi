@@ -1,0 +1,33 @@
+.player-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #FFFFFF;
+  background-color: #000000;
+  margin-right: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.info-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.info-key {
+  display: inline-block;
+  width: 80px;           /* ← ラベル幅を固定して整列 */
+  text-align: right;     /* コロンを右寄せに */
+  margin-right: 8px;     /* ラベルと値の間の余白 */
+}
+
+.info-value {
+  display: inline-block;
+  max-width: 150px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

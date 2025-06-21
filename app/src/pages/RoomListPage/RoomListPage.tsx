@@ -4,6 +4,7 @@ import "./roomListPage.css";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
+import Header from "../../components/Header/Header";
 
 type Room = {
   id: string;
@@ -59,9 +60,10 @@ const RoomListPage: React.FC = () => {
             break;
           case "room_created":
             setRooms((prev) => [...prev, msg.room]);
-            console.log(msg.room)
+            console.log(msg.room);
 
-            if (msg.room.player1 === player.name) { // 暫定処理のためにnameにしているがそのうちidにすること
+            if (msg.room.player1 === player.name) {
+              // 暫定処理のためにnameにしているがそのうちidにすること
               navigate(`/game/${msg.room.id}`);
             }
             break;
@@ -104,19 +106,22 @@ const RoomListPage: React.FC = () => {
   if (!player) return null; // 👈 ここで null ガードを追加
 
   return (
-    <div>
-      <div className="create-button-div">
-        <Button variant="contained" color="primary" onClick={createRoom}>
-          ルーム作成
-        </Button>
-      </div>
+    <>
+      <Header />
+      <div>
+        <div className="create-button-div">
+          <Button variant="contained" color="primary" onClick={createRoom}>
+            ルーム作成
+          </Button>
+        </div>
 
-      <RoomListTable
-        rooms={rooms}
-        onJoinRoom={joinRoom}
-        currentPlayerID={player.playerID}
-      />
-    </div>
+        <RoomListTable
+          rooms={rooms}
+          onJoinRoom={joinRoom}
+          currentPlayerID={player.playerID}
+        />
+      </div>
+    </>
   );
 };
 
