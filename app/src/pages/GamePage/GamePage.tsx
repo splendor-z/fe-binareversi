@@ -384,7 +384,11 @@ const GamePage: React.FC = () => {
                 )}
 
                 {/* ゲームボード */}
-                <GameBoard boardData={board} onCellClick={handleCellClick} />
+                <GameBoard
+                  boardData={board}
+                  onCellClick={handleCellClick}
+                  isOperating={isOperating}
+                />
               </Box>
               {renderOperators}
               {isOperating && (
