@@ -28,7 +28,8 @@ const GamePage: React.FC = () => {
   const [currentTurn, setCurrentTurn] = useState<number>(1);
 
   const [isGameOverModalOpen, setGameOverModalOpen] = useState(false);
-  const [winner, setWinner] = useState<string | null>(null);
+  const [winner, setWinner] = useState<number>(0);
+  const [myPlayerColor, setMyPlayerColor] = useState<number>(0);
 
   const isVertical = useMediaQuery("(max-aspect-ratio: 3/2)");
 
@@ -55,6 +56,11 @@ const GamePage: React.FC = () => {
         case "game_start":
           setBoard(data.board);
           setCurrentTurn(data.currentTurn);
+          if (data.isYourTurn === true) {
+            setMyPlayerColor(1)
+          } else {
+            setMyPlayerColor(0)
+          }
           break;
         case "board_update":
           setBoard(data.board);
@@ -258,16 +264,16 @@ const GamePage: React.FC = () => {
 
   const renderGameOverContent = () => {
     if (!player) return null;
+    console.log("winner", winner)
+    console.log("myPlyaerColor", myPlayerColor)
 
-    if (!winner) {
+    if (winner === -1) {
       return (
         <Typography variant="h2" align="center" color="textSecondary">
           ～ Draw ～
         </Typography>
       );
-    }
-
-    if (winner === player.playerID) {
+    } else if (winner === myPlayerColor) {
       return (
         <Box sx={{ color: "gold", fontWeight: "bold" }}>
           <Typography variant="h2" align="center">
@@ -275,7 +281,7 @@ const GamePage: React.FC = () => {
           </Typography>
         </Box>
       );
-    } else {
+    } else if (winner !== myPlayerColor){
       return (
         <Box sx={{ color: "red", fontWeight: "bold" }}>
           <Typography variant="h2" align="center">
