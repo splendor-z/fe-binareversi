@@ -76,6 +76,25 @@ const GamePage: React.FC = () => {
     };
   }, [roomId, player, navigate]);
 
+  const [isOperating, setIsOperating] = useState(false);
+  const [selectedOperator, setSelectedOperator] = useState<"+" | "*">("+");
+
+  const handleOperatorClick = (op: "+" | "*") => {
+    setSelectedOperator(op);
+  };
+
+  const handleCancel = () => {
+    setIsOperating(false);
+  };
+
+  const handleCalculate = () => {
+    // 実際の計算処理 or WebSocket送信など
+    wsRef.current?.send(
+      JSON.stringify({ type: "bitop", op: selectedOperator })
+    );
+    setIsOperating(false); // 実行後に戻すかはお好みで
+  };
+
   const handleExit = () => {
     wsRef.current?.send(JSON.stringify({ type: "exit_room" }));
   };
@@ -98,27 +117,36 @@ const GamePage: React.FC = () => {
     >
       <Button
         variant="outlined"
+        onClick={() => handleOperatorClick("+")}
+        hidden={!isOperating}
         sx={{
+          display: isOperating ? "display" : "none",
           borderRadius: "8px",
           height: "8vh",
           aspectRatio: "1",
           fontSize: "3vh",
           border: "3px solid black",
-          color: "black",
           fontWeight: "bold",
+          bgcolor: selectedOperator === "+" ? "black" : "white",
+          color: selectedOperator === "+" ? "white" : "black",
         }}
       >
         ＋
       </Button>
       <Button
         variant="outlined"
+        onClick={() => handleOperatorClick("*")}
+        hidden={!isOperating}
         sx={{
+          display: isOperating ? "display" : "none",
           borderRadius: "8px",
           height: "8vh",
           aspectRatio: "1",
           fontSize: "3.5vh",
           border: "3px solid black",
-          color: "black",
+          fontWeight: "bold",
+          bgcolor: selectedOperator === "*" ? "black" : "white",
+          color: selectedOperator === "*" ? "white" : "black",
         }}
       >
         ×
@@ -164,22 +192,45 @@ const GamePage: React.FC = () => {
     >
       <Button
         variant="outlined"
+        disabled={isOperating}
         onClick={() => wsRef.current?.send(JSON.stringify({ type: "pass" }))}
         sx={buttonStyle("black")}
       >
         パス
       </Button>
-      <Button variant="outlined" onClick={handleExit} sx={buttonStyle("red")}>
+      <Button
+        variant="outlined"
+        disabled={isOperating}
+        onClick={handleExit}
+        sx={buttonStyle("red")}
+      >
         退出
       </Button>
-      <Button variant="outlined" sx={buttonStyle("black")}>
-        演算
+      <Button
+        variant="outlined"
+        onClick={() => {
+          if (isOperating) {
+            handleCalculate();
+          } else {
+            setIsOperating(true);
+          }
+        }}
+        sx={buttonStyle(isOperating ? "green" : "black")}
+      >
+        {isOperating ? "実行" : "演算"}
       </Button>
-      <Button variant="outlined" sx={buttonStyle("red")}>
-        キャンセル
-      </Button>
+      <Box sx={{ display: isOperating ? "block" : "none" }}>
+        <Button
+          variant="outlined"
+          sx={buttonStyle("red")}
+          onClick={handleCancel}
+        >
+          キャンセル
+        </Button>
+      </Box>
     </Box>
   );
+
   return (
     <>
       <Header />
