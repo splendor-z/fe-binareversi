@@ -7,6 +7,8 @@ import {
   Container,
   Paper,
   useMediaQuery,
+  Radio,
+  FormControlLabel,
 } from "@mui/material";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import GameBoard from "../../components/GameBoard/GameBoard";
@@ -78,6 +80,7 @@ const GamePage: React.FC = () => {
 
   const [isOperating, setIsOperating] = useState(false);
   const [selectedOperator, setSelectedOperator] = useState<"+" | "*">("+");
+  const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
   const handleOperatorClick = (op: "+" | "*") => {
     setSelectedOperator(op);
@@ -254,8 +257,104 @@ const GamePage: React.FC = () => {
                 alignItems: "center",
               }}
             >
-              <GameBoard boardData={board} onCellClick={handleCellClick} />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                {/* ラジオボタン：左側に配置 */}
+                {isOperating && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      height: 480,
+                      justifyContent: "space-between",
+                      marginRight: 2,
+                    }}
+                  >
+                    {Array.from({ length: 8 }, (_, i) => (
+                      <Box
+                        key={i}
+                        sx={{
+                          height: 60,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center", // ← "flex-start" → "center" に変更
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <FormControlLabel
+                            value={i}
+                            control={
+                              <Radio
+                                checked={selectedRow === i}
+                                onChange={() => setSelectedRow(i)}
+                                sx={{
+                                  color: "black",
+                                  padding: 0,
+                                  marginRight: 1.5,
+                                  "&.Mui-checked": {
+                                    color: "red",
+                                  },
+                                }}
+                              />
+                            }
+                            label={
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "flex-start",
+                                  minWidth: 28, // ← ある程度の幅を確保
+                                  fontSize: "2rem", // ← 太く、大きく
+                                  fontWeight: "bold", // ← 太字に
+                                  marginLeft: 0.5, // ← ラジオボタンとの間隔
+                                }}
+                              >
+                                {selectedRow === i ? "→" : ""}
+                              </Box>
+                            }
+                            sx={{
+                              marginLeft: 0.5,
+                              marginRight: 0.5,
+                              width: "100%",
+                              justifyContent: "space-between",
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+
+                {/* ゲームボード */}
+                <GameBoard boardData={board} onCellClick={handleCellClick} />
+              </Box>
               {renderOperators}
+              {isOperating && (
+                <Box sx={{ mt: 2, textAlign: "left" }}>
+                  <Typography variant="body2">
+                    演算対象の行と演算子を選択し、
+                  </Typography>
+                  <Typography variant="body2">
+                    実行を押下することで二進数演算を行えます。
+                  </Typography>
+                  <Typography variant="body2">
+                    黒のコマを1、白のコマを0、と見たて、
+                  </Typography>
+                  <Typography variant="body2">
+                    行から変換されるバイナリを経過ターン数と選択した演算子で処理します。
+                  </Typography>
+                </Box>
+              )}
             </Box>
 
             {/* 右側：GameBoardの下端に合わせてrenderControlsを下詰め */}
@@ -263,11 +362,10 @@ const GamePage: React.FC = () => {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
-                marginBottom: 10,
+                justifyContent: "flex-end", // ← flexGrowとセットで明示
+                height: 480,
               }}
             >
-              <Box sx={{ flexGrow: 1 }} /> {/* 上方向スペーサー */}
               {renderControls}
             </Box>
           </Box>
