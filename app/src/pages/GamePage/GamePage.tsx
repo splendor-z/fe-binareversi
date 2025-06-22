@@ -13,6 +13,7 @@ import {
 import { useAppSelector } from "../../hooks/useAppSelector";
 import GameBoard from "../../components/GameBoard/GameBoard";
 import Header from "../../components/Header/Header";
+import Dialog from "../../components/Dialog/Dialog";
 
 const GamePage: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -24,6 +25,10 @@ const GamePage: React.FC = () => {
 
   const emptyBoard = Array.from({ length: 8 }, () => Array(8).fill(7));
   const [board, setBoard] = useState<number[][]>(emptyBoard);
+  const [currentTurn, setCurrentTurn] = useState<number>(1);
+
+  const [isGameOverModalOpen, setGameOverModalOpen] = useState(false);
+  const [winner, setWinner] = useState<string | null>(null);
 
   const isVertical = useMediaQuery("(max-aspect-ratio: 3/2)");
 
@@ -48,13 +53,18 @@ const GamePage: React.FC = () => {
 
       switch (data.type) {
         case "game_start":
+          setBoard(data.board);
+          setCurrentTurn(data.currentTurn);
+          break;
         case "board_update":
           setBoard(data.board);
+          setCurrentTurn(data.currentTurn);
           break;
         case "valid_moves":
           break;
         case "game_over":
-          alert(`Game Over! Winner: ${data.winner}`);
+          setWinner(data.winner);
+          setGameOverModalOpen(true);
           setTimeout(() => navigate("/rooms"), 3000);
           break;
         case "exited_room":
@@ -101,7 +111,7 @@ const handleOperating = () => {
       type: "operation",
       operator: selectedOperator,
       row: selectedRow,
-      value: 4, // 経過ターン数を value として送る 暫定として4ターン
+      value: currentTurn,
     })
   );
   setIsOperating(false);
@@ -178,7 +188,7 @@ const handleOperating = () => {
           padding: "0 16px",
         }}
       >
-        ターン
+        {currentTurn}ターン
       </Paper>
     </Box>
   );
@@ -243,6 +253,36 @@ const handleOperating = () => {
       </Box>
     </Box>
   );
+
+  const renderGameOverContent = () => {
+    if (!player) return null;
+
+    if (!winner) {
+      return (
+        <Typography variant="h2" align="center" color="textSecondary">
+          ～ Draw ～
+        </Typography>
+      );
+    }
+
+    if (winner === player.playerID) {
+      return (
+        <Box sx={{ color: "gold", fontWeight: "bold" }}>
+          <Typography variant="h2" align="center">
+            You Win!
+          </Typography>
+        </Box>
+      );
+    } else {
+      return (
+        <Box sx={{ color: "red", fontWeight: "bold" }}>
+          <Typography variant="h2" align="center">
+            You lose …
+          </Typography>
+        </Box>
+      );
+    }
+  };
 
   return (
     <>
@@ -379,6 +419,12 @@ const handleOperating = () => {
               {renderControls}
             </Box>
           </Box>
+        
+          <Dialog
+            isOpen={isGameOverModalOpen}
+            title={renderGameOverContent()}
+            onClose={() => setGameOverModalOpen(false)}
+          />
         </Container>
       </div>
     </>
