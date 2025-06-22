@@ -90,13 +90,23 @@ const GamePage: React.FC = () => {
     setIsOperating(false);
   };
 
-  const handleCalculate = () => {
-    // 実際の計算処理 or WebSocket送信など
-    wsRef.current?.send(
-      JSON.stringify({ type: "bitop", op: selectedOperator })
-    );
-    setIsOperating(false); // 実行後に戻すかはお好みで
-  };
+const handleOperating = () => {
+  if (selectedRow === null) {
+    alert("演算対象の行を選択してください。");
+    return;
+  }
+
+  wsRef.current?.send(
+    JSON.stringify({
+      type: "operation",
+      operator: selectedOperator,
+      row: selectedRow,
+      value: 4, // 経過ターン数を value として送る 暫定として4ターン
+    })
+  );
+  setIsOperating(false);
+};
+
 
   const handleExit = () => {
     wsRef.current?.send(JSON.stringify({ type: "exit_room" }));
@@ -213,7 +223,7 @@ const GamePage: React.FC = () => {
         variant="outlined"
         onClick={() => {
           if (isOperating) {
-            handleCalculate();
+            handleOperating();
           } else {
             setIsOperating(true);
           }
