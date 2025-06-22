@@ -1,0 +1,82 @@
+/* コンテナ全体の設定 */
+.game-table-container {
+  width: 80vw;
+  margin: 0 auto;
+  max-width: 1200px;
+  min-width: 380px;
+  height: 75vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* スクロール可能なテーブルラッパー */
+.game-table-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  border: 0.5px solid #b3b3b3;
+}
+
+/* テーブル基本設定 */
+.game-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* ヘッダー（thead）のスタイル */
+.game-table-thead {
+  background-color: #1976D2;
+  color: #FFFFFF;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* ヘッダーセル（th）には枠線なし */
+.game-table-th-start,
+.game-table-th-isfull,
+.game-table-th-playerA,
+.game-table-th-playerB {
+  text-align: center;
+  padding: 8px;
+  border: none;
+}
+
+/* ボディセル（td）には枠線あり */
+.game-table-td,
+.game-table-td-start,
+.game-table-td-isfull,
+.game-table-td-playerA,
+.game-table-td-playerB {
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+/* 各列の幅 */
+.game-table-th-start,
+.game-table-td-start {
+  width: 4%;
+}
+
+.game-table-th-isfull,
+.game-table-td-isfull {
+  width: 8%;
+}
+
+.game-table-th-playerA,
+.game-table-td-playerA,
+.game-table-th-playerB,
+.game-table-td-playerB {
+  width: 44%;
+}
+
+/* 行の高さ */
+.game-table-tr {
+  height: 50px;
+}
+
+/* 満席時の行背景色 */
+.game-table-tr-full {
+  background-color: #c1c1c1;
+}
