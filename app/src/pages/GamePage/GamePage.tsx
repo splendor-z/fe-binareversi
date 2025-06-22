@@ -257,7 +257,7 @@ const GamePage: React.FC = () => {
         
           <Dialog
             isOpen={isGameOverModalOpen}
-            result={renderGameOverContent()}
+            title={renderGameOverContent()}
             onClose={() => setGameOverModalOpen(false)}
           />
         </Container>
