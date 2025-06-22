@@ -235,7 +235,7 @@ const GamePage: React.FC = () => {
     >
       <Button
         variant="outlined"
-        disabled={isOperating}
+        disabled={!isMyTurn || isOperating}
         onClick={() => wsRef.current?.send(JSON.stringify({ type: "pass" }))}
         sx={buttonStyle("black")}
       >
@@ -251,6 +251,7 @@ const GamePage: React.FC = () => {
       </Button>
       <Button
         variant="outlined"
+        disabled={!isMyTurn}
         onClick={() => {
           if (isOperating) {
             handleOperating();
