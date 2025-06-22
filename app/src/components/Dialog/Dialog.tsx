@@ -3,16 +3,16 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography }
 
 type DialogProps = {
   isOpen: boolean;
-  result: string;            // 勝ち負け引き分けのメッセージ
+  title: string;            // 勝ち負け引き分けのメッセージ
   onClose: () => void;
-  closeMessage?: string;     // 閉じる際の補足メッセージ（任意）
+  message?: string;     // 閉じる際の補足メッセージ（任意）
 };
 
 export const ResultDialog: React.FC<DialogProps> = ({
   isOpen,
-  result,
+  title,
   onClose,
-  closeMessage = '画面を閉じて退出してください', // デフォルト値
+  message = '画面を閉じて退出してください', // デフォルト値
 }) => {
   return (
     <Dialog
@@ -41,12 +41,12 @@ export const ResultDialog: React.FC<DialogProps> = ({
         }}
       >
         <Typography variant="h2" component="div" align="center" color="textSecondary">
-            {result}
+            {title}
         </Typography>
       </DialogTitle>
       <DialogContent>
         <Typography variant="h6">
-          {closeMessage}
+          {message}
         </Typography>
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'center', paddingBottom: 3 }}>
@@ -63,7 +63,7 @@ export const ResultDialog: React.FC<DialogProps> = ({
             color: "black",
           }}
         >
-          閉じる
+          確認
         </Button>
       </DialogActions>
     </Dialog>
