@@ -9,6 +9,7 @@ import {
   useMediaQuery,
   Radio,
   FormControlLabel,
+  Alert,
 } from "@mui/material";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import GameBoard from "../../components/GameBoard/GameBoard";
@@ -29,6 +30,7 @@ const GamePage: React.FC = () => {
 
   const [isGameOverModalOpen, setGameOverModalOpen] = useState(false);
   const [winner, setWinner] = useState<string | null>(null);
+  const [isMyTurn, setIsMyTurn] = useState(false);
 
   const isVertical = useMediaQuery("(max-aspect-ratio: 3/2)");
 
@@ -55,10 +57,12 @@ const GamePage: React.FC = () => {
         case "game_start":
           setBoard(data.board);
           setCurrentTurn(data.currentTurn);
+          setIsMyTurn(data.isYourTurn);
           break;
         case "board_update":
           setBoard(data.board);
           setCurrentTurn(data.currentTurn);
+          setIsMyTurn(data.isYourTurn);
           break;
         case "valid_moves":
           break;
@@ -123,8 +127,8 @@ const GamePage: React.FC = () => {
   const handleCellClick = (x: number, y: number) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       if (isOperating) {
-        console.log("Now Operating")
-        return
+        console.log("Now Operating");
+        return;
       }
       wsRef.current.send(JSON.stringify({ type: "move", x, y }));
     }
@@ -140,6 +144,20 @@ const GamePage: React.FC = () => {
         marginTop: 2,
       }}
     >
+      {isMyTurn && (
+        <Alert
+          severity="info"
+          variant="filled"
+          sx={{
+            mb: 2,
+            fontWeight: "bold",
+            fontSize: "1.1rem",
+            borderRadius: 2,
+          }}
+        >
+          あなたの番です！
+        </Alert>
+      )}
       <Button
         variant="outlined"
         onClick={() => handleOperatorClick("+")}
