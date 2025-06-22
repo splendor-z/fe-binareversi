@@ -16,6 +16,7 @@ const GamePage: React.FC = () => {
 
   const emptyBoard = Array.from({ length: 8 }, () => Array(8).fill(7));
   const [board, setBoard] = useState<number[][]>(emptyBoard);
+  const [currentTurn, setCurrentTurn] = useState<number>(1);
 
   const [isGameOverModalOpen, setGameOverModalOpen] = useState(false);
   const [winner, setWinner] = useState<string | null>(null);
@@ -41,8 +42,10 @@ const GamePage: React.FC = () => {
 
       switch (data.type) {
         case "game_start":
+          setCurrentTurn(data.currentTurn);
         case "board_update":
           setBoard(data.board);
+          setCurrentTurn(data.currentTurn);
           break;
         case "valid_moves":
           break;
@@ -248,7 +251,7 @@ const GamePage: React.FC = () => {
                 borderColor: "black",
               }}
             >
-              ターン
+              {`${currentTurn}`}ターン
             </Paper>
           </Box>
         
