@@ -122,6 +122,10 @@ const GamePage: React.FC = () => {
 
   const handleCellClick = (x: number, y: number) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
+      if (isOperating) {
+        console.log("Now Operating")
+        return
+      }
       wsRef.current.send(JSON.stringify({ type: "move", x, y }));
     }
   };
