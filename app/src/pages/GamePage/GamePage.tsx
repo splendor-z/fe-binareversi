@@ -65,7 +65,6 @@ const GamePage: React.FC = () => {
         case "game_over":
           setWinner(data.winner);
           setGameOverModalOpen(true);
-          setTimeout(() => navigate("/rooms"), 3000);
           break;
         case "exited_room":
           navigate("/rooms");
@@ -100,23 +99,22 @@ const GamePage: React.FC = () => {
     setIsOperating(false);
   };
 
-const handleOperating = () => {
-  if (selectedRow === null) {
-    alert("演算対象の行を選択してください。");
-    return;
-  }
+  const handleOperating = () => {
+    if (selectedRow === null) {
+      alert("演算対象の行を選択してください。");
+      return;
+    }
 
-  wsRef.current?.send(
-    JSON.stringify({
-      type: "operation",
-      operator: selectedOperator,
-      row: selectedRow,
-      value: currentTurn,
-    })
-  );
-  setIsOperating(false);
-};
-
+    wsRef.current?.send(
+      JSON.stringify({
+        type: "operation",
+        operator: selectedOperator,
+        row: selectedRow,
+        value: currentTurn,
+      })
+    );
+    setIsOperating(false);
+  };
 
   const handleExit = () => {
     wsRef.current?.send(JSON.stringify({ type: "exit_room" }));
@@ -419,7 +417,7 @@ const handleOperating = () => {
               {renderControls}
             </Box>
           </Box>
-        
+
           <Dialog
             isOpen={isGameOverModalOpen}
             title={renderGameOverContent()}
