@@ -65,7 +65,6 @@ const GamePage: React.FC = () => {
         case "game_over":
           setWinner(data.winner);
           setGameOverModalOpen(true);
-          setTimeout(() => navigate("/rooms"), 3000);
           break;
         case "exited_room":
           navigate("/rooms");
