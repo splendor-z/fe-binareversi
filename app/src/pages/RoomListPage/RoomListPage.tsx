@@ -11,8 +11,8 @@ type Room = {
   player1: string;
   player2?: string;
   isFull: boolean;
+  createdAt: string; // ← この行を追加
 };
-
 type Player = {
   playerID: string;
   // 他のプロパティがあればここに追加
@@ -23,6 +23,14 @@ const RoomListPage: React.FC = () => {
     (state: { player: Player | null }) => state.player
   );
   const [rooms, setRooms] = useState<Room[]>([]);
+
+  const [tmpRooms, setTmpRooms] = useState<{
+    vacant: Room[];
+    full: Room[];
+  }>({
+    vacant: [],
+    full: [],
+  });
   const wsRef = useRef<WebSocket | null>(null);
   const navigate = useNavigate();
 
@@ -85,6 +93,35 @@ const RoomListPage: React.FC = () => {
     };
   }, [player]);
 
+  useEffect(() => {
+    const sortedVacant = [...rooms]
+      .filter((room) => !room.isFull)
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+    const sortedFull = [...rooms]
+      .filter((room) => room.isFull)
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+    setTmpRooms({
+      vacant: sortedVacant,
+      full: sortedFull,
+    });
+  }, [rooms]);
+
+  useEffect(() => {
+    console.log("🔴 full 配列が更新されました:", tmpRooms.full);
+  }, [tmpRooms.full]);
+
+  useEffect(() => {
+    console.log("🟢 vacant 配列が更新されました:", tmpRooms.vacant);
+  }, [tmpRooms.vacant]);
+
   const createRoom = () => {
     if (!player) return;
     wsRef.current?.send(
@@ -116,7 +153,7 @@ const RoomListPage: React.FC = () => {
         </div>
 
         <RoomListTable
-          rooms={rooms}
+          rooms={[...tmpRooms.vacant, ...tmpRooms.full]} // ← ここを変更！
           onJoinRoom={joinRoom}
           currentPlayerID={player.playerID}
         />
