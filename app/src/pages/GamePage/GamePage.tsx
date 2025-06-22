@@ -4,6 +4,7 @@ import { Box, Button, Typography, Container, Paper } from "@mui/material";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import GameBoard from "../../components/GameBoard/GameBoard";
 import Header from "../../components/Header/Header";
+import Dialog from "../../components/Dialog/Dialog";
 
 const GamePage: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
@@ -15,6 +16,9 @@ const GamePage: React.FC = () => {
 
   const emptyBoard = Array.from({ length: 8 }, () => Array(8).fill(7));
   const [board, setBoard] = useState<number[][]>(emptyBoard);
+
+  const [isGameOverModalOpen, setGameOverModalOpen] = useState(false);
+  const [winner, setWinner] = useState<string | null>(null);
 
   if (!player) return null; // 早期リターン
 
@@ -43,7 +47,8 @@ const GamePage: React.FC = () => {
         case "valid_moves":
           break;
         case "game_over":
-          alert(`Game Over! Winner: ${data.winner}`);
+          setWinner(data.winner);
+          setGameOverModalOpen(true);
           setTimeout(() => navigate("/rooms"), 3000);
           break;
         case "exited_room":
@@ -74,6 +79,36 @@ const GamePage: React.FC = () => {
   const handleCellClick = (x: number, y: number) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({ type: "move", x, y }));
+    }
+  };
+
+  const renderGameOverContent = () => {
+    if (!player) return null;
+
+    if (!winner) {
+      return (
+        <Typography variant="h2" align="center" color="textSecondary">
+          ～ Draw ～
+        </Typography>
+      );
+    }
+
+    if (winner === player.playerID) {
+      return (
+        <Box sx={{ color: "gold", fontWeight: "bold" }}>
+          <Typography variant="h2" align="center">
+            You Win!
+          </Typography>
+        </Box>
+      );
+    } else {
+      return (
+        <Box sx={{ color: "red", fontWeight: "bold" }}>
+          <Typography variant="h2" align="center">
+            You lose …
+          </Typography>
+        </Box>
+      );
     }
   };
 
@@ -216,6 +251,12 @@ const GamePage: React.FC = () => {
               ターン
             </Paper>
           </Box>
+        
+          <Dialog
+            isOpen={isGameOverModalOpen}
+            result={renderGameOverContent()}
+            onClose={() => setGameOverModalOpen(false)}
+          />
         </Container>
       </div>
     </>
