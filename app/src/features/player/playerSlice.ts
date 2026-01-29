@@ -6,13 +6,13 @@ export interface Player {
   name: string;
 }
 
-const initialState: Player | null = null;
+const initialState = null as Player | null;
 
 export const playerSlice = createSlice({
   name: "player",
   initialState,
   reducers: {
-    setPlayer: (_, action: PayloadAction<Player>) => {
+    setPlayer: (_state, action: PayloadAction<Player>): Player | null => {
       console.log("ログイン済みプレイヤー", action.payload);
       return action.payload;
     },

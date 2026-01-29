@@ -12,7 +12,9 @@ const Game = () => {
   useEffect(() => {
     if (!userID) return;
 
-    const ws = new WebSocket(`ws://localhost:8080/ws/game/${roomId}`);
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const host = window.location.host;
+    const ws = new WebSocket(`${protocol}//${host}/ws/game/${roomId}`);
     wsRef.current = ws;
 
     ws.onopen = () => {

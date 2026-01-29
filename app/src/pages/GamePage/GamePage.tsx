@@ -40,8 +40,10 @@ const GamePage: React.FC = () => {
   useEffect(() => {
     if (!roomId || wsRef.current) return;
 
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const host = window.location.host;
     const ws = new WebSocket(
-      `ws://localhost:8080/ws/game/${roomId}/${player.playerID}`
+      `${protocol}//${host}/ws/game/${roomId}/${player.playerID}`
     );
     wsRef.current = ws;
 

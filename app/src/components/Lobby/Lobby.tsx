@@ -15,7 +15,9 @@ const Lobby = () => {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080/ws/lobby");
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const host = window.location.host;
+    const ws = new WebSocket(`${protocol}//${host}/ws/lobby`);
     wsRef.current = ws;
 
     ws.onmessage = (e) => {

@@ -3,7 +3,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography }
 
 type DialogProps = {
   isOpen: boolean;
-  title: string;            // 勝ち負け引き分けのメッセージ
+  title: React.ReactNode;            // 勝ち負け引き分けのメッセージ
   onClose: () => void;
   message?: string;     // 閉じる際の補足メッセージ（任意）
 };
@@ -17,7 +17,7 @@ export const ResultDialog: React.FC<DialogProps> = ({
   return (
     <Dialog
       open={isOpen}
-      onClose={(event, reason) => {
+      onClose={(_, reason) => {
         if (reason === "backdropClick" || reason === "escapeKeyDown") return;
         onClose();
       }}

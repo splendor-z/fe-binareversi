@@ -13,10 +13,7 @@ type Room = {
   isFull: boolean;
   createdAt: string; // ← この行を追加
 };
-type Player = {
-  playerID: string;
-  // 他のプロパティがあればここに追加
-};
+import type { Player } from "../../features/player/playerSlice";
 
 const RoomListPage: React.FC = () => {
   const player = useAppSelector(
@@ -40,7 +37,9 @@ const RoomListPage: React.FC = () => {
       return;
     }
 
-    const ws = new WebSocket("ws://localhost:8080/ws/lobby");
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const host = window.location.host;
+    const ws = new WebSocket(`${protocol}//${host}/ws/lobby`);
     wsRef.current = ws;
 
     ws.onopen = () => {
